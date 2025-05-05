@@ -30,7 +30,7 @@ The application is also available as pre-compiled executables:
 
 - 🪟 `bin/windows/plot.exe` – for Windows 11 or later
 - 🐧 `bin/ubuntu/plot` – for Ubuntu Linux (x86_64)
-
+  > 💡 Reconstruct using `join_parts.sh` before running (see below)
 You can run them directly without installing Python.
 
 ## 📂 Folder Structure
@@ -38,24 +38,46 @@ You can run them directly without installing Python.
 ```
 .
 ├── bin/
-│   ├── windows/plot.exe  # Windows executable
-│   └── ubuntu/plot       # Linux executable
-├── plot.py               # Main application script
-├── monitor_log.csv       # Input CSV file (time in first column)
-├── plot_config.json      # Auto-generated config file
-├── demo.gif              # Animation demo
-└── README.md             # This file
+│   ├── windows/
+│   │   └── plot.exe           # Windows executable
+│   └── ubuntu/
+│       ├── plot.part00        # Split Linux executable (~50MB chunks)
+│       ├── plot.part01
+│       ├── ...
+│       └── join_parts.sh      # Shell script to reconstruct 'plot'
+├── plot.py                    # Main application script (Python source)
+├── monitor_log.csv            # Input CSV file (time in first column)
+├── plot_config.json           # Auto-generated config for plot order and view
+├── demo.gif                   # Animation demo
+└── README.md                  # This file
 ```
 
-## 📦 Requirements
+## 🐧 Reconstructing Linux Executable
 
-Install the following Python packages:
+If you're using the Linux version, the executable is split due to GitHub size limits.  
+To reassemble it:
+
+```bash
+cd bin/ubuntu/
+sh join_parts.sh
+```
+
+This creates the `plot` binary and marks it executable.  
+You can then run it directly:
+
+```bash
+./plot
+```
+
+## 📦 Requirements (for source version)
+
+If you use the Python script (`plot.py`), install these:
 
 ```bash
 pip install pyqt5 pyqtgraph pandas numpy pyarrow
 ```
 
-## ▶ How to Run
+## ▶ How to Run (source version)
 
 ```bash
 python3 -u plot.py
@@ -67,9 +89,9 @@ Each column should represent a variable. The first column must be time in second
 ## 💾 Configuration and Cache
 
 - `plot_config.json` is auto-generated to store:
-  - Plot order
-  - Cursor time
-  - X-axis range
+  - Last Plot order
+  - Last Cursor time
+  - Last X-axis range
 
 - `tool-temp/` is also created automatically:
   - Contains `monitor_log.parquet` (converted from CSV)
@@ -83,4 +105,4 @@ Each column should represent a variable. The first column must be time in second
 
 ---
 
-© 2025 misawa-san. Licensed under MIT.
+© 2025 [misawa-san](https://github.com/misawa-san). Licensed under MIT.
